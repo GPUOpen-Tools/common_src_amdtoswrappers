@@ -8,4 +8,7 @@
       <Value>$(CommonDir)</Value>
     </BuildMacro>
   </ItemGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(CommonDir)\Src\Vsprops\Global-Common.props" />
+  </ImportGroup>
 </Project>
