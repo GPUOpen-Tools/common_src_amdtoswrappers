@@ -5,7 +5,7 @@
 /// \file osReadWriteLock.cpp
 ///
 //=====================================================================
-#include <osReadWriteLock.h>
+#include <AMDTOSWrappers/Include/osReadWriteLock.h>
 
 osReadWriteLock::osReadWriteLock()
 {

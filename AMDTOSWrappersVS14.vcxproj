@@ -42,19 +42,15 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <AMDTModuleType>Dynamic</AMDTModuleType>
-    <AMDTConfiguration>Release</AMDTConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release_Static'" Label="Configuration">
     <AMDTModuleType>Static</AMDTModuleType>
-    <AMDTConfiguration>Release</AMDTConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <AMDTModuleType>Dynamic</AMDTModuleType>
-    <AMDTConfiguration>Debug</AMDTConfiguration>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug_Static'" Label="Configuration">
     <AMDTModuleType>Static</AMDTModuleType>
-    <AMDTConfiguration>Debug</AMDTConfiguration>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <UseOfMfc>false</UseOfMfc>
@@ -70,12 +66,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\Local-CommonProjects.props" />
-    <Import Project="$(AMDTCommonAMD)\GPUPerfAPI\Global-GPUPerfAPI.props" />
-    <Import Project="$(AMDTCommonEXT)\Windows-Kits\Global-WindowsSDK.props" />
-    <Import Project="$(AMDTCommonEXT)\tinyxml\Global-TinyXML-2015.props" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets">
+    <Import Project="AMDTOSWrappers.props" />
+    <Import Project="$(CommonDir)\Src\Vsprops\Global-Common.props" />
+    <Import Project="$(CommonDir)\Lib\AMD\GPUPerfAPI\Global-GPUPerfAPI.props" />
+    <Import Project="$(CommonDir)\Lib\Ext\Windows-Kits\Global-WindowsSDK.props" />
+    <Import Project="$(CommonDir)\Lib\Ext\tinyxml\Global-TinyXML-2015.props" />
     <Import Project="$(CommonDir)\Lib\Ext\Boost\Global-Boost-2015.props" />
   </ImportGroup>
   <PropertyGroup>
@@ -87,70 +82,24 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(AMDTCommonExt)zlib\1.2.8;$(AMDTCommonExt)MicrosoftPlatformSDK\march2009;$(CommonDir)\Src\Miniz\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DBGHELP_TRANSLATE_TCHAR;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>OldStyle</DebugInformationFormat>
-      <AdditionalOptions> /MP %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\;$(ProjectDir)\src;$(CommonDir)\Lib\Ext\zlib\1.2.8;$(CommonDir)\Lib\Ext\MicrosoftPlatformSDK\march2009;$(CommonDir)\Src\Miniz\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DBGHELP_TRANSLATE_TCHAR;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(AMDTModuleType)'=='Dynamic'">
     <ClCompile>
       <PreprocessorDefinitions>_USRDLL;AMDTOSWRAPPERS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>$(AMDTOutputDir)$(Configuration)\arch\$(TargetName).lib</ImportLibrary>
       <AdditionalDependencies>ws2_32.lib;Version.lib;zlibstat.lib;CXLBaseTools$(GDTProjectSuffix).lib;Dbghelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(AMDTOutputDir)$(Configuration)\arch;$(AMDTCommonExt)zlib\1.2.8\contrib\vstudio\vc12\$(GDTPlatform)\ZlibStat$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>LIBCMT$(GDTDebugSuffixNoDash);%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(AMDTOutputDir)$(Configuration)\arch;$(CommonDir)\Lib\Ext\zlib\1.2.8\contrib\vstudio\vc14\$(GDTPlatform)\ZlibStat$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(AMDTModuleType)'=='Static'">
     <ClCompile>
       <PreprocessorDefinitions>AMDTBASETOOLS_STATIC;AMDTOSWRAPPERS_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(AMDTConfiguration)'=='Debug'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(AMDTConfiguration)'=='Release'">
-    <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
-    <Link>
-      <TargetMachine>MachineX86</TargetMachine>
-      <ImageHasSafeExceptionHandlers Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ImageHasSafeExceptionHandlers>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
-    <Link>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-    <Lib>
-      <AdditionalOptions>/MACHINE:X64 %(AdditionalOptions)</AdditionalOptions>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(CommonDir)\Src\Miniz\miniz.c" />
@@ -316,36 +265,6 @@
     <ClCompile Include="src\common\osWrappersInitFunc.cpp">
       <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="src\linux\osConsole.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osInputFileImpl.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osKeyboardListener.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="src\linux\osProcessSharedFile.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osReadWriteLock.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osTime.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="src\osProductVersion.cpp">
       <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
     </ClCompile>
@@ -355,7 +274,6 @@
     </ClCompile>
     <ClCompile Include="src\win32\osCallsStackReader.cpp">
       <ObjectFileName>$(IntDir)win32\%(Filename).obj</ObjectFileName>
-      <AdditionalOptions Condition="'$(AMDTConfiguration)'=='Release'">/Oy- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="src\win32\osConsole.cpp">
       <ObjectFileName>$(IntDir)win32\%(Filename).obj</ObjectFileName>
@@ -481,192 +399,6 @@
     <ClCompile Include="src\win32\osWin32Functions.cpp">
       <ObjectFileName>$(IntDir)win32\%(Filename).obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="src\linux\osApplication.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osCallsStackReader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osCondition.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osCriticalSectionImpl.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osDaemon.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osDebuggingFunctions.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osDesktop.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osDirectory.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osFile.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osFileLauncher.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osFilePath.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osGeneralFunctions.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osLinuxProcFileSystemReader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osMachine.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osModule.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osMutexImpl.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osNetworkAdapter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osPipeExecutor.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osPipeSocket.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osPipeSocketClient.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osPipeSocketServer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osPortAddress.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osProcess.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osSingleApplicationInstance.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osSocket.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osStopWatch.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osSystemError.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osTCPSocket.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osTCPSocketClient.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osTCPSocketServer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osThread.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osThreadLocalData.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osTimer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osToAndFromString.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\linux\osUser.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)linux\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osApplication.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osBundle.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osDebuggingFunctions.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osFile.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osFilePath.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osGeneralFunctions.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osMachine.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osMacSystemResourcesSampler.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osModule.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\mac\osProcess.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ObjectFileName>$(IntDir)mac\%(Filename).obj</ObjectFileName>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuildStep Include="src\iphone\osApplication.mm">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\osAtomic.h" />
