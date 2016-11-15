@@ -159,10 +159,16 @@
     // Module file extension string
     #define OS_MODULE_EXTENSION L"dll"
 
+#ifndef CMAKE_BUILD
+
     // The spies sub-directory name:
     #define OS_SPIES_SUB_DIR_NAME L"spies" GDT_BUILD_SUFFIX_W
     #define OS_SPIES_64_SUB_DIR_NAME L"spies64" GDT_BUILD_SUFFIX_W
-
+#else
+    // The spies sub-directory name:
+    #define OS_SPIES_SUB_DIR_NAME L"spies" 
+    #define OS_SPIES_64_SUB_DIR_NAME L"spies64" 
+#endif
     // OpenGL dll name:
     #define OS_OPENGL_MODULE_NAME L"opengl32.dll"
 
