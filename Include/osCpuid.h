@@ -43,7 +43,9 @@ enum
     /// Pennar (70-7f), Iguana (80-8f)
     FAMILY_OR = 0x15,
     /// Kabini (models 0-f), Thebe (10-1f), Kryptos (20-2f), Samara (50-5f)
-    FAMILY_KB = 0x16
+    FAMILY_KB = 0x16,
+    /// A Zen cpu: Zeppelin (models 0-f)
+    FAMILY_ZN = 0x17,
 };
 
 /// These enumerations define the cpuid functions used
@@ -138,7 +140,7 @@ union FamilyModelSteppingUnion
         gtUInt32 extModel: 4;
         /// Bits[27:20] The Cpu extended family (family = family + extFamily)
         gtUInt32 extFamily: 8;
-        /// Bits[31:28] Reserverd
+        /// Bits[31:28] Reserved
         gtUInt32 unknown2: 4;
     } info;
     /// The value of the EAX register
