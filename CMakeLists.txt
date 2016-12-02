@@ -15,13 +15,13 @@ endif()
 
 # Add this definition if static linkage is used with the other projects
 add_definitions(-DAMDTBASETOOLS_STATIC)
- 
+
 # Configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
   "${PROJECT_SOURCE_DIR}/AMDTOSWrappersConfig.h.in"
   "${PROJECT_BINARY_DIR}/AMDTOSWrappersConfig.h"
-  ) 
+  )
 
 # Include direoctories
 include_directories("${PROJECT_SOURCE_DIR}/Include")
@@ -32,7 +32,7 @@ include_directories("${PROJECT_SOURCE_DIR}/../../Lib/Ext/tinyxml/2.6.2")
 
 # Windows-specific source files
 file(GLOB WINDOWS_SRC
-	"src/osProductVersion.cpp"
+        "src/osProductVersion.cpp"
 
         # Common
         "src/common/osApplication.cpp"
@@ -76,77 +76,77 @@ file(GLOB WINDOWS_SRC
         "src/common/osOutputFileImpl.cpp"
         "src/common/osPortAddress.cpp"
         "src/common/osProcess.cpp"
-	"src/common/osRawMemoryBuffer.cpp"
-	"src/common/osRawMemoryStream.cpp"
-	"src/common/osSettingsFileHandler.cpp"
-	"src/common/osSingeltonsDelete.cpp"
-	"src/common/osSocket.cpp"
-	"src/common/osStream.cpp"
-	"src/common/osSynchronizationObject.cpp"
-	"src/common/osSynchronizationObjectLocker.cpp"
-	"src/common/osSystemError.cpp"
-	"src/common/osTCPSocketServer.cpp"
-	"src/common/osTCPSocketServerConnectionHandler.cpp"
-	"src/common/osTime.cpp"
-	"src/common/osTimeInterval.cpp"
-	"src/common/osTransferableObject.cpp"
-	"src/common/osTransferableObjectCreatorsBase.cpp"
-	"src/common/osTransferableObjectCreatorsManager.cpp"
-	"src/common/osTransferableObjectType.cpp"
-	"src/common/osWrappersInitFunc.cpp"
+        "src/common/osRawMemoryBuffer.cpp"
+        "src/common/osRawMemoryStream.cpp"
+        "src/common/osSettingsFileHandler.cpp"
+        "src/common/osSingeltonsDelete.cpp"
+        "src/common/osSocket.cpp"
+        "src/common/osStream.cpp"
+        "src/common/osSynchronizationObject.cpp"
+        "src/common/osSynchronizationObjectLocker.cpp"
+        "src/common/osSystemError.cpp"
+        "src/common/osTCPSocketServer.cpp"
+        "src/common/osTCPSocketServerConnectionHandler.cpp"
+        "src/common/osTime.cpp"
+        "src/common/osTimeInterval.cpp"
+        "src/common/osTransferableObject.cpp"
+        "src/common/osTransferableObjectCreatorsBase.cpp"
+        "src/common/osTransferableObjectCreatorsManager.cpp"
+        "src/common/osTransferableObjectType.cpp"
+        "src/common/osWrappersInitFunc.cpp"
 
-	# win-32
-	"src/win32/osApplication.cpp"
-	"src/win32/osAtomicImpl.h"
-	"src/win32/osCallsStackReader.cpp"
-	"src/win32/osConsole.cpp"
-	"src/win32/osCriticalSectionImpl.cpp"
-	"src/win32/osDaemon.h"
-	"src/win32/osDebuggingFunctions.cpp"
-	"src/win32/osDesktop.cpp"
-	"src/win32/osDirectory.cpp"
-	"src/win32/osFile.cpp"
-	"src/win32/osFileLauncher.cpp"
-	"src/win32/osFilePath.cpp"
-	"src/win32/osGeneralFunctions.cpp"
-	"src/win32/osInputFileImpl.cpp"
-	"src/win32/osKeyboardListener.cpp"
-	"src/win32/osMachine.cpp"
-	"src/win32/osModule.cpp"
-	"src/win32/osMutexImpl.cpp"
-	"src/win32/osMutexImpl.h"
-	"src/win32/osNetworkAdapter.cpp"
-	"src/win32/osPipeSocket.cpp"
-	"src/win32/osPipeSocketClient.cpp"
-	"src/win32/osPipeSocketServer.cpp"
-	"src/win32/osPortAddress.cpp"
-	"src/win32/osPrivateData.h"
-	"src/win32/osProcess.cpp"
-	"src/win32/osProcessSharedFile.cpp"
-	"src/win32/osReadWriteLock.cpp"
-	"src/win32/osSingleApplicationInstance.cpp"
-	"src/win32/osStopWatch.cpp"
-	"src/win32/osSynchronizationObjectImpl.cpp"
-	"src/win32/osSynchronizationObjectImpl.h"
-	"src/win32/osSystemError.cpp"
-	"src/win32/osTCPSocket.cpp"
-	"src/win32/osTCPSocketClient.cpp"
-	"src/win32/osTCPSocketServer.cpp"
-	"src/win32/osThread.cpp"
-	"src/win32/osThreadLocalData.cpp"
-	"src/win32/osTime.cpp"
-	"src/win32/osTimer.cpp"
-	"src/win32/osToAndFromString.cpp"
-	"src/win32/osUnhandledExceptionHandler.cpp"
-	"src/win32/osUser.cpp"
-	"src/win32/osWin32CallStackReader.cpp"
-	"src/win32/osWin32DebugInfoReader.cpp"
-	"src/win32/osWin32DebugSymbolsManager.cpp"
-	"src/win32/osWin32Functions.cpp"
+        # win-32
+        "src/win32/osApplication.cpp"
+        "src/win32/osAtomicImpl.h"
+        "src/win32/osCallsStackReader.cpp"
+        "src/win32/osConsole.cpp"
+        "src/win32/osCriticalSectionImpl.cpp"
+        "src/win32/osDaemon.h"
+        "src/win32/osDebuggingFunctions.cpp"
+        "src/win32/osDesktop.cpp"
+        "src/win32/osDirectory.cpp"
+        "src/win32/osFile.cpp"
+        "src/win32/osFileLauncher.cpp"
+        "src/win32/osFilePath.cpp"
+        "src/win32/osGeneralFunctions.cpp"
+        "src/win32/osInputFileImpl.cpp"
+        "src/win32/osKeyboardListener.cpp"
+        "src/win32/osMachine.cpp"
+        "src/win32/osModule.cpp"
+        "src/win32/osMutexImpl.cpp"
+        "src/win32/osMutexImpl.h"
+        "src/win32/osNetworkAdapter.cpp"
+        "src/win32/osPipeSocket.cpp"
+        "src/win32/osPipeSocketClient.cpp"
+        "src/win32/osPipeSocketServer.cpp"
+        "src/win32/osPortAddress.cpp"
+        "src/win32/osPrivateData.h"
+        "src/win32/osProcess.cpp"
+        "src/win32/osProcessSharedFile.cpp"
+        "src/win32/osReadWriteLock.cpp"
+        "src/win32/osSingleApplicationInstance.cpp"
+        "src/win32/osStopWatch.cpp"
+        "src/win32/osSynchronizationObjectImpl.cpp"
+        "src/win32/osSynchronizationObjectImpl.h"
+        "src/win32/osSystemError.cpp"
+        "src/win32/osTCPSocket.cpp"
+        "src/win32/osTCPSocketClient.cpp"
+        "src/win32/osTCPSocketServer.cpp"
+        "src/win32/osThread.cpp"
+        "src/win32/osThreadLocalData.cpp"
+        "src/win32/osTime.cpp"
+        "src/win32/osTimer.cpp"
+        "src/win32/osToAndFromString.cpp"
+        "src/win32/osUnhandledExceptionHandler.cpp"
+        "src/win32/osUser.cpp"
+        "src/win32/osWin32CallStackReader.cpp"
+        "src/win32/osWin32DebugInfoReader.cpp"
+        "src/win32/osWin32DebugSymbolsManager.cpp"
+        "src/win32/osWin32Functions.cpp"
 )
 
 # Linux-specific source files
-# Commented-out source files were left in this code intentionally - 
+# Commented-out source files were left in this code intentionally -
 # should consider removing those files from the repo.
 file(GLOB LINUX_SRC
     "src/osProductVersion.cpp"
@@ -248,7 +248,7 @@ file(GLOB LINUX_SRC
     "src/linux/osInputFileImpl.cpp"
     "src/linux/osUnhandledExceptionHandler.cpp"
     "src/linux/osUser.cpp"
-# Generic Linux 
+# Generic Linux
     "src/linux/osApplication.cpp"
     "src/linux/osDebuggingFunctions.cpp"
     "src/linux/osDesktop.cpp"
@@ -269,5 +269,8 @@ endif()
 set_target_properties(AMDTOSWrappers PROPERTIES DEBUG_POSTFIX -d)
 
 # Link settings
-target_link_libraries (AMDTOSWrappers AMDTBaseTools)
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    target_link_libraries (AMDTOSWrappers rt)
+endif()
 
+target_link_libraries (AMDTOSWrappers AMDTBaseTools)
