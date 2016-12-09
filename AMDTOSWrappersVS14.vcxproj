@@ -71,10 +71,7 @@
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(AMDTModuleType)'=='Dynamic'">$(AMDTOutputDir)$(Configuration)\bin\</OutDir>
-    <IntDir Condition="'$(AMDTModuleType)'=='Dynamic'">$(AMDTOutputDir)$(Configuration)\obj\$(ProjectName)\$(Platform)$(GDTBuildSuffix)\</IntDir>
     <OutDir Condition="'$(AMDTModuleType)'=='Static'">$(IntDir)</OutDir>
-    <IntDir Condition="'$(AMDTModuleType)'=='Static'">$(SolutionDir)obj\$(Configuration)-$(PlatformName)$(GDTBuildSuffix)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
