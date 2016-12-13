@@ -5,18 +5,18 @@
     <CommonDir>..\..\..\Common\</CommonDir>
     <AMDTOutputDir>..\..\..\CodeXL\Output\</AMDTOutputDir>
     <CommonProjectsDir>..\..\..\CommonProjects\</CommonProjectsDir>
-    <GDT_PUBLIC />
+    <AMDT_PUBLIC />
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(AMDTOutputDir)$(Configuration)\bin\</OutDir>
-    <IntDir>$(AMDTOutputDir)$(Configuration)\obj\$(ProjectName)\$(Platform)$(GDTBuildSuffix)\</IntDir>
+    <IntDir>$(AMDTOutputDir)$(Configuration)\obj\$(ProjectName)\$(Platform)$(AMDTBuildSuffix)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link />
     <ClCompile />
     <Link>
       <AdditionalLibraryDirectories>$(AMDTOutputDir)$(Configuration)\arch</AdditionalLibraryDirectories>
-      <AdditionalDependencies>AMDTBaseTools$(GDTProjectSuffix).lib;AMDTOSWrappers$(GDTProjectSuffix).lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>AMDTBaseTools$(AMDTProjectSuffix).lib;AMDTOSWrappers$(AMDTProjectSuffix).lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(CommonProjectsDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -33,8 +33,8 @@
     <BuildMacro Include="CommonProjectsDir">
       <Value>$(CommonProjectsDir)</Value>
     </BuildMacro>
-    <BuildMacro Include="GDT_PUBLIC">
-      <Value>$(GDT_PUBLIC)</Value>
+    <BuildMacro Include="AMDT_PUBLIC">
+      <Value>$(AMDT_PUBLIC)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>

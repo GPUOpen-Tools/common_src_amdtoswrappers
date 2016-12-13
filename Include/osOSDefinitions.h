@@ -162,8 +162,8 @@
 #ifndef CMAKE_BUILD
 
     // The spies sub-directory name:
-    #define OS_SPIES_SUB_DIR_NAME L"spies" GDT_BUILD_SUFFIX_W
-    #define OS_SPIES_64_SUB_DIR_NAME L"spies64" GDT_BUILD_SUFFIX_W
+    #define OS_SPIES_SUB_DIR_NAME L"spies" AMDT_BUILD_SUFFIX_W
+    #define OS_SPIES_64_SUB_DIR_NAME L"spies64" AMDT_BUILD_SUFFIX_W
 #else
     // The spies sub-directory name:
     #define OS_SPIES_SUB_DIR_NAME L"spies" 
