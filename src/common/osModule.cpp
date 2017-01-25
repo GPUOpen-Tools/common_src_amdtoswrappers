@@ -296,7 +296,10 @@ void osGetSystemOpenGLModulePath(gtVector<osFilePath>& systemOGLModulePaths)
                 L"/usr/lib/x86_64-linux-gnu/mesa/" OS_OPENGL_MODULE_NAME
             };
 
+            // Make sure that the amdgpu-pro path is being searched first.
+            gtVector<osFilePath> tmpPaths = std::move(systemOGLModulePaths);
             systemOGLModulePaths.insert(systemOGLModulePaths.end(), systemOGLModulePathStrings.begin(), systemOGLModulePathStrings.end());
+            systemOGLModulePaths.insert(systemOGLModulePaths.end(), tmpPaths.begin(), tmpPaths.end());
 
             // Add additional paths from etc conf
             osGetEtcConfGLPaths(systemOGLModulePaths);
