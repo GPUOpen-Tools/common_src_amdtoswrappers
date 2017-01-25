@@ -282,7 +282,7 @@ void osGetSystemOpenGLModulePath(gtVector<osFilePath>& systemOGLModulePaths)
             static const gtVector<gtString> systemOGLModulePathStrings =
             {
                 // Ubuntu locations for AMD open-source driver
-                L"/usr/lib/x86_64-linux-gnu/amdgpu-pro/" OS_OPENGL_MODULE_NAME,
+                L"/opt/amdgpu-pro/lib/x86_64-linux-gnu/" OS_OPENGL_MODULE_NAME,
 
                 // Red-Hat locations for AMD open-source driver
                 L"/usr/lib64/amdgpu-pro/" OS_OPENGL_MODULE_NAME,
