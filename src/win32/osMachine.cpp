@@ -101,7 +101,13 @@ bool osGetAmountOfLocalMachineCPUs(int& amountOfCPUs)
 
     // Get the current machine system information:
     SYSTEM_INFO siSysInfo;
-    GetSystemInfo(&siSysInfo);
+    BOOL isSys64 = true;
+
+#if AMDT_ADDRESS_SPACE_TYPE == AMDT_32_BIT_ADDRESS_SPACE
+    IsWow64Process(GetCurrentProcess(), &isSys64);
+#endif
+
+    isSys64 ? GetNativeSystemInfo(&siSysInfo) : GetSystemInfo(&siSysInfo);
 
     // Output the amount of machine processors:
     amountOfCPUs = siSysInfo.dwNumberOfProcessors;
@@ -267,7 +273,13 @@ bool osGetLocalMachineCPUInformationStrings(gtString& numberOfProcessors, gtStri
 
     // Get system info:
     SYSTEM_INFO siSysInfo;
-    GetSystemInfo(&siSysInfo);
+    BOOL isSys64 = true;
+
+#if AMDT_ADDRESS_SPACE_TYPE == AMDT_32_BIT_ADDRESS_SPACE
+    IsWow64Process(GetCurrentProcess(), &isSys64);
+#endif
+
+    isSys64 ? GetNativeSystemInfo(&siSysInfo) : GetSystemInfo(&siSysInfo);
 
     // Get number of processors:
     numberOfProcessors.appendFormattedString(L"%d", siSysInfo.dwNumberOfProcessors);
