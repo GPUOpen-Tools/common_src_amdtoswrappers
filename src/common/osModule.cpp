@@ -421,12 +421,15 @@ bool osGetSystemOpenCLModulePath(gtVector<osFilePath>& systemOCLModulePaths)
 
 #if ((AMDT_BUILD_TARGET == AMDT_LINUX_OS) && (AMDT_LINUX_VARIANT == AMDT_GENERIC_LINUX_VARIANT))
         {
-            gtString systemOCLModulePathStr = L"/usr/lib32/fglrx/" OS_OPENCL_ICD_MODULE_NAME;
+            // Make sure that the amdgpu-pro location comes first.
+            gtVector<osFilePath> tmpPaths = std::move(systemOCLModulePaths);
+            gtString systemOCLModulePathStr = L"/opt/amdgpu-pro/lib/x86_64-linux-gnu/" OS_OPENCL_ICD_MODULE_NAME;
+            systemOCLModulePaths.push_back(systemOCLModulePathStr);
+            systemOCLModulePaths.insert(systemOCLModulePaths.end(), tmpPaths.begin(), tmpPaths.end());
+
+            systemOCLModulePathStr = L"/usr/lib32/fglrx/" OS_OPENCL_ICD_MODULE_NAME;
             systemOCLModulePaths.push_back(systemOCLModulePathStr);
             systemOCLModulePathStr = L"/usr/lib/fglrx/" OS_OPENCL_ICD_MODULE_NAME;
-            systemOCLModulePaths.push_back(systemOCLModulePathStr);
-
-            systemOCLModulePathStr = L"/usr/lib/x86_64-linux-gnu/amdgpu-pro/" OS_OPENCL_ICD_MODULE_NAME;
             systemOCLModulePaths.push_back(systemOCLModulePathStr);
         }
 #endif
