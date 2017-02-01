@@ -281,6 +281,11 @@ const gtString& osFilePath::asString(bool appendSeparatorToDir) const
 
     if (!_fileExtension.isEmpty())
     {
+        if ((!appendSeparatorToDir) && (!_fileDirectory.isEmpty()) && (_fileName.isEmpty()))
+        {
+            pToSelfNonConst->_fileFullPathString.append(osPathSeparator);
+        }
+
         pToSelfNonConst->_fileFullPathString.append(osExtensionSeparator);
         pToSelfNonConst->_fileFullPathString.append(_fileExtension);
     }
