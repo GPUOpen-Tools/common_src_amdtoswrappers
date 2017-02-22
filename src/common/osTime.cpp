@@ -1054,7 +1054,7 @@ void osTime::currentTimeAsString(gtString& strTime, TimeFormat stringFormat, Tim
 // ---------------------------------------------------------------------------
 void osTimeValFromMilliseconds(long timeAsMsec, struct timeval& timeAsTimeVal)
 {
-    // Divide the time we got, measured in milliseconds to second and miliseconds reminder:
+    // Divide the time we got, measured in milliseconds to second and miliseconds remainder:
     long seconds = timeAsMsec / 1000L;
     long miliseconds = timeAsMsec % 1000L;
 

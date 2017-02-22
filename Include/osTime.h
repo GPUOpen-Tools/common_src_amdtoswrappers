@@ -11,7 +11,7 @@
 #ifndef __OSTIME_H
 #define __OSTIME_H
 
-// Forward decelerations:
+// Forward declarations:
 struct timeval;
 class gtString;
 class gtASCIIString;
