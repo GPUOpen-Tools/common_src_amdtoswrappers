@@ -22,10 +22,10 @@
 #include <AMDTOSWrappers/Include/osSystemResourcesDataSampler.h>
 
 // The size of a buffer that holds the currently parsed file content:
-#define OS_PROC_FS_FILE_CONTENT_BUF_SIZE 4096
+#define OS_PROC_FS_FILE_CONTENT_BUF_SIZE (4096 * 2)
 
 // The maximal amount of supported CPUs:
-#define OS_SUPPORTED_CPUS_AMOUNT 32
+#define OS_SUPPORTED_CPUS_AMOUNT 256
 
 
 // ----------------------------------------------------------------------------------
