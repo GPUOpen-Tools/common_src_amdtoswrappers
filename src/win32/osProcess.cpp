@@ -199,7 +199,7 @@ osProcessSharedFile g_outputRedirectFile;
 osProcessSharedFile g_inputRedirectFile;
 
 #if !defined ( SID_REVISION )
-#define SID_REVISION ( 1 ) ///< SID definition
+    #define SID_REVISION ( 1 ) ///< SID definition
 #endif
 
 bool osEnableTokenPrivilege(HANDLE htok, LPCTSTR szPrivilege, TOKEN_PRIVILEGES* tpOld)
@@ -237,7 +237,7 @@ bool osEnableTokenPrivilege(HANDLE htok, LPCTSTR szPrivilege, TOKEN_PRIVILEGES* 
 //              dwAccessRights - the desired access rights
 // Return Val:  true if DACL was adjusted to provide the desired access was successfully
 // Author:      AMD Developer Tools Team
-// Date:        
+// Date:
 // ---------------------------------------------------------------------------
 static bool osAdjustDACL(HANDLE h, DWORD dwDesiredAccess)
 {
@@ -252,9 +252,9 @@ static bool osAdjustDACL(HANDLE h, DWORD dwDesiredAccess)
         {
             0,
             NO_MULTIPLE_TRUSTEE,
-        TRUSTEE_IS_SID,
-        TRUSTEE_IS_USER,
-        0
+            TRUSTEE_IS_SID,
+            TRUSTEE_IS_USER,
+            0
         }
     };
 
@@ -286,7 +286,7 @@ static bool osAdjustDACL(HANDLE h, DWORD dwDesiredAccess)
 //              dwAccessRights - the desired access rights
 // Return Val:  The handle to the target process
 // Author:      AMD Developer Tools Team
-// Date:        
+// Date:
 // ---------------------------------------------------------------------------
 static osProcessHandle osAdvancedOpenProcess(osProcessId pid, DWORD dwAccessRights)
 {
@@ -640,7 +640,7 @@ bool osWaitForProcessToTerminate(osProcessId processId, unsigned long timeoutMse
 // Arguments: processId - The id of the process to be terminated.
 //            exitCode - The terminated process exit code.
 //            isTerminateChildren - should processes spawned by the target process be terminated too
-//            isGracefulShutdownRequired - attempts to close the process gracefully before forcefully terminating it. 
+//            isGracefulShutdownRequired - attempts to close the process gracefully before forcefully terminating it.
 //                                          This option is currently not implemented on Windows.
 // Return Val: bool  - Success / failure.
 // Author:      AMD Developer Tools Team
@@ -720,7 +720,9 @@ void osRemoveRedirectionFromCmdLine(const gtString& originalString, gtString& tr
 // ----------------------------------------------------------------------------------
 bool osLaunchSuspendedProcess(const osFilePath& executablePath, const gtString& arguments,
                               const osFilePath& workDirectory, osProcessId& processId, osProcessHandle& processHandle,
-                              osThreadHandle& processThreadHandle, bool createWindow, bool redirectFiles, bool removeCodeXLPaths)
+                              osThreadHandle& processThreadHandle, bool createWindow,
+                              bool redirectFiles, bool removeCodeXLPaths,
+                              const AdditionalProcessParams* pAdditionalParams)
 {
     GT_UNREFERENCED_PARAMETER(removeCodeXLPaths);
 
@@ -764,10 +766,18 @@ bool osLaunchSuspendedProcess(const osFilePath& executablePath, const gtString& 
         si.hStdInput = g_inputRedirectFile.handle();
     }
 
-    DWORD createFlag = CREATE_NEW_PROCESS_GROUP;
-
     // Create target with suspended.
-    createFlag |= CREATE_SUSPENDED;
+    DWORD createFlag = CREATE_SUSPENDED;
+
+    if (nullptr != pAdditionalParams)
+    {
+        const WindowsProcessAdditionalParameter* additionalWindowProcessParam = dynamic_cast<const WindowsProcessAdditionalParameter*>(pAdditionalParams);
+
+        if (additionalWindowProcessParam->m_bCreateNewProcessWithGroup)
+        {
+            createFlag |= CREATE_NEW_PROCESS_GROUP;
+        }
+    }
 
     if (!createWindow)
     {
@@ -1650,6 +1660,7 @@ OS_API bool osExecAndGrabOutput(const char* cmd, const bool& cancelSignal, gtStr
                 // Read the command's output.
                 osFile tmpFile(tmpFilePath);
                 bool rc1 = tmpFile.open(osChannel::OS_ASCII_TEXT_CHANNEL, osFile::OS_OPEN_TO_READ);
+
                 if (rc1)
                 {
                     gtASCIIString cmdOutputASCII;

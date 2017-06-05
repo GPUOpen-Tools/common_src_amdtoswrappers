@@ -37,6 +37,24 @@ enum osRuntimePlatform
     OS_UNKNOWN_PLATFORM
 };
 
+/// This structure can be implemented for any OS implementation to add platform-specific parameters for process creation
+struct AdditionalProcessParams
+{
+    /// Virtual Destructor
+    virtual ~AdditionalProcessParams() {}
+};
+
+/// Structure for the additional parameters for the Window Process
+struct WindowsProcessAdditionalParameter : AdditionalProcessParams
+{
+    bool m_bCreateNewProcessWithGroup;   ///< this flag corresponds to CREATE_NEW_PROCESS_GROUP for windows process creation
+
+    /// Constructor
+    WindowsProcessAdditionalParameter():
+        m_bCreateNewProcessWithGroup(true)
+    {}
+};
+
 OS_API bool osSetCurrentProcessEnvVariable(const osEnvironmentVariable& envVariable);
 OS_API bool osRemoveCurrentProcessEnvVariable(const gtString& envVariableName);
 OS_API bool osGetCurrentProcessEnvVariableValue(const gtString& envVariableName, gtString& envVariableValue);
@@ -45,9 +63,16 @@ OS_API bool osExpandEnvironmentStrings(const gtString& envVariableValue, gtStrin
 OS_API osProcessId osGetCurrentProcessId();
 OS_API void osExitCurrentProcess(int exitCode);
 
-OS_API bool osLaunchSuspendedProcess(const osFilePath& executablePath, const gtString& arguments,
-                                     const osFilePath& workDirectory, osProcessId& processId, osProcessHandle& processHandle,
-                                     osThreadHandle& processThreadHandle, bool createWindow = true, bool redirectFiles = false, bool removeCodeXLPaths = true);
+OS_API bool osLaunchSuspendedProcess(const osFilePath& executablePath,
+                                     const gtString& arguments,
+                                     const osFilePath& workDirectory,
+                                     osProcessId& processId,
+                                     osProcessHandle& processHandle,
+                                     osThreadHandle& processThreadHandle,
+                                     bool createWindow = true,
+                                     bool redirectFiles = false,
+                                     bool removeCodeXLPaths = true,
+                                     const AdditionalProcessParams* pAdditionalParams = nullptr);
 OS_API bool osResumeSuspendedProcess(const osProcessId& processId, const osProcessHandle& processHandle,
                                      const osThreadHandle& processThreadHandle, bool closeHandles);
 

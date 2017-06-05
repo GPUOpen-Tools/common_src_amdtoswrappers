@@ -261,7 +261,7 @@ bool osWaitForProcessToTerminate(osProcessId processId, unsigned long timeoutMse
         long accumulatedWaitTimeNanoseconds = 0;
         long nanoSecondsInSingleWait = 0;
         long timeoutNanoseconds = timeoutMsec * 1000 * 1000;
-        
+
         // pay attention to the possibility of overflow for a 32-bit long
         // basically, don't convert the number into nanoseconds and then clean it up.
         nanoSecondsInSingleWait = std::min<long>(50 * 1000 * 1000, timeoutNanoseconds);
@@ -285,6 +285,7 @@ bool osWaitForProcessToTerminate(osProcessId processId, unsigned long timeoutMse
                 osIsProcessAlive(processId, theProcessExited);
                 theProcessExited = !theProcessExited;
             }
+
             accumulatedWaitTimeNanoseconds += nanoSecondsInSingleWait;
         }
     }
@@ -306,7 +307,7 @@ bool osWaitForProcessToTerminate(osProcessId processId, unsigned long timeoutMse
 // Arguments: processId - The id of the process to be terminated.
 //            exitCode - ignored on Linux (used only in iPhone on-device).
 //            isTerminateChildren - should processes spawned by the target process be terminated too
-//            isGracefulShutdownRequired - attempts to close the process gracefully before forcefully terminating it. 
+//            isGracefulShutdownRequired - attempts to close the process gracefully before forcefully terminating it.
 //                                          This option is currently not implemented on Windows.
 // Return Val: bool  - Success / failure.
 // Author:      AMD Developer Tools Team
@@ -381,7 +382,8 @@ bool osLaunchSuspendedProcess(
     osThreadHandle& /*processThreadHandle = ignored */,
     bool createWindow,
     bool redirectFiles,
-    bool removeCodeXLPaths)
+    bool removeCodeXLPaths,
+    const AdditionalProcessParams* /*pAdditionalParams = ignored*/)
 {
     // Check if has permission to run the executablePath
     std::string utf8ExePath, utf8WorkDirectory;
@@ -720,31 +722,33 @@ bool osIsProcessAlive(osProcessId processId, bool& buffer)
 
 bool osGetProcessIdentificationInfo(osProcessId& processId, char* pName, gtSize_t* pNameLen)
 {
-   GT_ASSERT(pName != nullptr);
-   GT_ASSERT(pNameLen != nullptr);
-   char buffer[1024] = {};
-   snprintf(buffer, sizeof(buffer), "/proc/%d/exe", processId);
+    GT_ASSERT(pName != nullptr);
+    GT_ASSERT(pNameLen != nullptr);
+    char buffer[1024] = {};
+    snprintf(buffer, sizeof(buffer), "/proc/%d/exe", processId);
 
-   bool ret = false;
-   char buf[512] = {};
-   int count = readlink(buffer, buf, sizeof(buf));
-   if (count >= 0 && count <= static_cast<int>(*pNameLen))
-   {
-     gtString name;
-     name.fromASCIIString(buf);
-     osFilePath path(name);
-     path.getFileName(name);
-     *pNameLen = name.length();
-     memcpy(pName, name.asASCIICharArray(), *pNameLen);
-     ret = true;
-   }
-  return ret;
+    bool ret = false;
+    char buf[512] = {};
+    int count = readlink(buffer, buf, sizeof(buf));
+
+    if (count >= 0 && count <= static_cast<int>(*pNameLen))
+    {
+        gtString name;
+        name.fromASCIIString(buf);
+        osFilePath path(name);
+        path.getFileName(name);
+        *pNameLen = name.length();
+        memcpy(pName, name.asASCIICharArray(), *pNameLen);
+        ret = true;
+    }
+
+    return ret;
 }
 
 bool osGetProcessIdentificationInfo(osProcessId& processId, osProcessId* pParentProcessId, osProcessId* pGroupId,
                                     char* pName, gtSize_t* pNameLen)
 {
-    char buffer[1024]= {};
+    char buffer[1024] = {};
     snprintf(buffer, sizeof(buffer), "/proc/%d/status", processId);
 
     bool ret = false;
@@ -1101,24 +1105,24 @@ bool osProcessesEnumerator::next(osProcessId& processId, gtString* pName)
     struct dirent entry, *pNext;
     bool ret = false;
     GT_IF_WITH_ASSERT(nullptr != pName)
-     {               
-	 while (0 == readdir_r(reinterpret_cast<DIR*>(m_pEnumHandler), &entry, &pNext) && NULL != pNext)
-	   {
-	       if (isdigit(*entry.d_name))
-		{
-		    processId = static_cast<gtUInt32>(strtoul(entry.d_name, NULL, 10));
+    {
+        while (0 == readdir_r(reinterpret_cast<DIR*>(m_pEnumHandler), &entry, &pNext) && NULL != pNext)
+        {
+            if (isdigit(*entry.d_name))
+            {
+                processId = static_cast<gtUInt32>(strtoul(entry.d_name, NULL, 10));
 
-		    char name[OS_MAX_PATH] = {};
-		    gtSize_t maxLen = OS_MAX_PATH - 1;
+                char name[OS_MAX_PATH] = {};
+                gtSize_t maxLen = OS_MAX_PATH - 1;
 
-		    if (osGetProcessIdentificationInfo(processId, name, &maxLen))
-		    {
-		       pName->fromUtf8String(name);		      
-   	               ret = true;
-		       break;
-		    }
-		}
-	    }//while
+                if (osGetProcessIdentificationInfo(processId, name, &maxLen))
+                {
+                    pName->fromUtf8String(name);
+                    ret = true;
+                    break;
+                }
+            }
+        }//while
     }
 
     return ret;
@@ -1150,11 +1154,13 @@ OS_API bool osTerminateChildren(osProcessId parentProcessId, bool isGracefulShut
             }
 
             bool isChildProcess = osIsParent(parentProcessId, processId);
+
             if (isChildProcess)
             {
                 children.push_back(processId);
             }
         }
+
         retVal = true;
     }
 
@@ -1335,11 +1341,12 @@ OS_API bool osIsParent(osProcessId parentProcessId, osProcessId processId)
 
     while (rc && originalParentProcessId != 0)
     {
-	    if (originalParentProcessId == parentProcessId)
+        if (originalParentProcessId == parentProcessId)
         {
             retVal = true;
             break;
-	    }
+        }
+
         processId = originalParentProcessId;
         rc = osGetProcessIdentificationInfo(processId, &originalParentProcessId);
     }
