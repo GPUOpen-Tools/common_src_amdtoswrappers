@@ -768,15 +768,21 @@ bool osLaunchSuspendedProcess(const osFilePath& executablePath, const gtString& 
 
     // Create target with suspended.
     DWORD createFlag = CREATE_SUSPENDED;
+    bool createNewProcessGroup = true;
 
     if (nullptr != pAdditionalParams)
     {
         const WindowsProcessAdditionalParameter* additionalWindowProcessParam = dynamic_cast<const WindowsProcessAdditionalParameter*>(pAdditionalParams);
 
-        if (additionalWindowProcessParam->m_bCreateNewProcessWithGroup)
+        if (!additionalWindowProcessParam->m_bCreateNewProcessWithGroup)
         {
-            createFlag |= CREATE_NEW_PROCESS_GROUP;
+            createNewProcessGroup = false;
         }
+    }
+
+    if(createNewProcessGroup)
+    {
+        createFlag |= CREATE_NEW_PROCESS_GROUP;
     }
 
     if (!createWindow)
