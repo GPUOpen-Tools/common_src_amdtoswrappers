@@ -195,8 +195,9 @@ static bool ReadProcessPlatformWow64(HANDLE hProcess, osRuntimePlatform& platfor
 #endif
 
 // redirection files:
-osProcessSharedFile g_outputRedirectFile;
-osProcessSharedFile g_inputRedirectFile;
+osProcessSharedFile g_outputRedirectFile;   // stdout
+osProcessSharedFile g_errorRedirectFile;    // stderr
+osProcessSharedFile g_inputRedirectFile;    // stdin
 
 #if !defined ( SID_REVISION )
     #define SID_REVISION ( 1 ) ///< SID definition
@@ -631,6 +632,9 @@ bool osWaitForProcessToTerminate(osProcessId processId, unsigned long timeoutMse
         retVal = true;
     }
 
+    // Close redirected input/output streams
+    osCloseProcessRedirectionFiles();
+
     return retVal;
 }
 
@@ -667,6 +671,9 @@ bool osTerminateProcess(osProcessId processId, long exitCode, bool isTerminateCh
         retVal = (rc != 0);
 
     }
+
+    // Close redirected input/output streams
+    osCloseProcessRedirectionFiles();
 
     return retVal;
 }
@@ -743,12 +750,21 @@ bool osLaunchSuspendedProcess(const osFilePath& executablePath, const gtString& 
     if (redirectFiles)
     {
         gtString outputFileName;
+        gtString errorFileName;
         gtString inputFileName;
         bool appendMode;
+
+        GT_ASSERT_EX(g_outputRedirectFile.handle() == 0 && g_errorRedirectFile.handle() == 0 && g_inputRedirectFile.handle() == 0,
+                     L"Some of redirected streams from previous process launch are not closed.");
 
         if (osCheckForOutputRedirection(commandLine, outputFileName, appendMode))
         {
             g_outputRedirectFile.openFile(outputFileName, true, appendMode);
+        }
+
+        if (osCheckForErrorRedirection(commandLine, errorFileName, appendMode))
+        {
+            g_errorRedirectFile.openFile(errorFileName, true, appendMode);
         }
 
         if (osCheckForInputRedirection(commandLine, inputFileName))
@@ -756,14 +772,15 @@ bool osLaunchSuspendedProcess(const osFilePath& executablePath, const gtString& 
             g_inputRedirectFile.openFile(inputFileName, false, false);
         }
 
-        if (g_outputRedirectFile.handle() != NULL || g_inputRedirectFile.handle() != NULL)
+        if (g_outputRedirectFile.handle() != 0 || g_errorRedirectFile.handle() != 0 || g_inputRedirectFile.handle() != 0)
         {
             si.dwFlags = STARTF_USESTDHANDLES;
             handleInheritance = TRUE;
         }
 
         si.hStdOutput = g_outputRedirectFile.handle();
-        si.hStdInput = g_inputRedirectFile.handle();
+        si.hStdError  = g_errorRedirectFile.handle();
+        si.hStdInput  = g_inputRedirectFile.handle();
     }
 
     // Create target with suspended.
@@ -875,6 +892,7 @@ void osCloseProcessRedirectionFiles()
 {
     g_inputRedirectFile.closeFile();
     g_outputRedirectFile.closeFile();
+    g_errorRedirectFile.closeFile();
 }
 
 bool osSetProcessAffinityMask(osProcessId processId, const osProcessHandle processHandle, gtUInt64 affinityMask)

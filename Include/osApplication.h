@@ -62,6 +62,7 @@ OS_API void osSetCurrentApplicationDllsPath(const osFilePath& dllsPath);
 OS_API bool osGetCurrentApplicationDllsPath(osFilePath& dllsPath, osModuleArchitecture specificArchitecture = OS_UNKNOWN_ARCHITECTURE);
 
 OS_API bool osCheckForOutputRedirection(gtString& commandLine, gtString& fileName, bool& appendMode);
+OS_API bool osCheckForErrorRedirection(gtString& commandLine, gtString& fileName, bool& appendMode);
 OS_API bool osCheckForInputRedirection(gtString& commandLine, gtString& fileName);
 
 OS_API bool osSupportWindowsStoreApps();

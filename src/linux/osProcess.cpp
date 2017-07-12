@@ -38,6 +38,7 @@
 
 // redirection files:
 osProcessSharedFile g_outputRedirectFile;
+osProcessSharedFile g_errorRedirectFile;
 osProcessSharedFile g_inputRedirectFile;
 
 void osRemovePathFromLibraryPath(const gtString& pathToRemove)
@@ -297,6 +298,9 @@ bool osWaitForProcessToTerminate(osProcessId processId, unsigned long timeoutMse
         *pExitCode = 0;
     }
 
+    // Close redirected input/output streams
+    osCloseProcessRedirectionFiles();
+
     return theProcessExited;
 }
 
@@ -360,6 +364,9 @@ bool osTerminateProcess(osProcessId processId, long exitCode, bool isTerminateCh
         }
     }
 
+    // Close redirected input/output streams
+    osCloseProcessRedirectionFiles();
+
     (void)(exitCode); // unused
     return retVal;
 }
@@ -422,12 +429,21 @@ bool osLaunchSuspendedProcess(
             if (redirectFiles)
             {
                 gtString outputFileName;
+                gtString errorFileName;
                 gtString inputFileName;
                 bool appendMode;
+
+                GT_ASSERT_EX(g_outputRedirectFile.handle() == 0 && g_errorRedirectFile.handle() == 0 && g_inputRedirectFile.handle() == 0,
+                             L"Some of redirected streams from previous process launch are not closed.");
 
                 if (osCheckForOutputRedirection(cmdStr, outputFileName, appendMode))
                 {
                     g_outputRedirectFile.openFile(outputFileName, true, appendMode);
+                }
+
+                if (osCheckForErrorRedirection(cmdStr, errorFileName, appendMode))
+                {
+                    g_errorRedirectFile.openFile(errorFileName, true, appendMode);
                 }
 
                 if (osCheckForInputRedirection(cmdStr, inputFileName))
@@ -584,6 +600,12 @@ bool osLaunchSuspendedProcess(
                                     g_outputRedirectFile.closeFile();
                                 }
 
+                                if (g_errorRedirectFile.handle() != 0)
+                                {
+                                    dup2(g_errorRedirectFile.handle(), STDERR_FILENO);
+                                    g_errorRedirectFile.closeFile();
+                                }
+
                                 if (g_inputRedirectFile.handle() != 0)
                                 {
                                     dup2(g_inputRedirectFile.handle(), STDIN_FILENO);
@@ -681,6 +703,7 @@ void osCloseProcessRedirectionFiles()
 {
     g_inputRedirectFile.closeFile();
     g_outputRedirectFile.closeFile();
+    g_errorRedirectFile.closeFile();
 }
 
 

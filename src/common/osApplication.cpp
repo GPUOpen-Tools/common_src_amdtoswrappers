@@ -107,38 +107,35 @@ bool osGetCurrentApplicationDllsPath(osFilePath& dllsPath, osModuleArchitecture 
 }
 
 // ---------------------------------------------------------------------------
-// Name:        osCheckForOutputRedirection
-// Description: find if redirection for output exists and open file in the correct format
-// Arguments:   const gtString& commandLine
-// Author:      AMD Developer Tools Team
-// Date:        13/6/2013
+// Name:        osCheckForOutErrRedirection
+// Description: Helper function that finds stdout/stderr redirection operators.
 // ---------------------------------------------------------------------------
-bool osCheckForOutputRedirection(gtString& commandLine, gtString& fileName, bool& appendMode)
+static bool osCheckForOutErrRedirection(gtString& commandLine, bool stdErr, gtString& fileName, bool& appendMode)
 {
     int nameEnd = -1;
     bool nameLooked = false;
     appendMode = false;
+    
+    gtString  WRITE_TO_FILE_OP  = (stdErr ? L"2>"  : L">");
+    gtString  APPEND_TO_FILE_OP = (stdErr ? L"2>>" : L">>");
 
     // Look for the redirection directives:
-    int nameStart = commandLine.find(L">>");
+    int nameStart;
 
-    if (nameStart != -1)
+    if ((nameStart = commandLine.find(APPEND_TO_FILE_OP)) != -1
+        && (stdErr || commandLine[nameStart-1] != '2'))
     {
         // Look for the name and mark that a directive was found:
-        nameEnd = osGetRedirectionFileName(commandLine, nameStart + 2, fileName);
+        nameEnd = osGetRedirectionFileName(commandLine, nameStart + APPEND_TO_FILE_OP.length(), fileName);
         nameLooked = true;
         appendMode = true;
     }
-    else
+    else if ((nameStart = commandLine.find(WRITE_TO_FILE_OP)) != -1
+             && (stdErr || commandLine[nameStart-1] != '2'))
     {
-        nameStart = commandLine.find('>');
-
-        if (nameStart != -1)
-        {
-            // Look for the name and mark that an append directive was found:
-            nameEnd = osGetRedirectionFileName(commandLine, nameStart + 1, fileName);
-            nameLooked = true;
-        }
+        // Look for the name and mark that an append directive was found:
+        nameEnd = osGetRedirectionFileName(commandLine, nameStart + WRITE_TO_FILE_OP.length(), fileName);
+        nameLooked = true;
     }
 
     bool retVal = false;
@@ -163,6 +160,29 @@ bool osCheckForOutputRedirection(gtString& commandLine, gtString& fileName, bool
     }
 
     return retVal;
+
+}
+
+// ---------------------------------------------------------------------------
+// Name:        osCheckForOutputRedirection
+// Description: find if redirection for output exists and open file in the correct format
+// Arguments:   const gtString& commandLine
+// Author:      AMD Developer Tools Team
+// Date:        13/6/2013
+// ---------------------------------------------------------------------------
+bool osCheckForOutputRedirection(gtString& commandLine, gtString& fileName, bool& appendMode)
+{
+    return osCheckForOutErrRedirection(commandLine, false, fileName, appendMode);
+}
+
+// ---------------------------------------------------------------------------
+// Name:        osCheckForErrorRedirection
+// Description: find if redirection for stderr exists and open file in the correct format
+// Arguments:   const gtString& commandLine
+// ---------------------------------------------------------------------------
+bool osCheckForErrorRedirection(gtString& commandLine, gtString& fileName, bool& appendMode)
+{
+    return osCheckForOutErrRedirection(commandLine, true, fileName, appendMode);
 }
 
 // ---------------------------------------------------------------------------
@@ -223,7 +243,7 @@ int osGetRedirectionFileName(const gtString& commandLine, int startingPos, gtStr
     int currentPos = startingPos;
 
     // Find first char that is not space:
-    while (commandLine[currentPos++] != ' ' && currentPos < commandLine.length());
+    while (commandLine[currentPos] == ' ' && currentPos < commandLine.length()) currentPos++;
 
     if (currentPos < commandLine.length())
     {
@@ -247,7 +267,7 @@ int osGetRedirectionFileName(const gtString& commandLine, int startingPos, gtStr
         else
         {
             // look until none char is reached or end of line:
-            while ((iswalnum(commandLine[currentPos]) || (wcschr(L".\\/:", commandLine[currentPos]) != NULL)) && currentPos < commandLine.length())
+            while ((iswalnum(commandLine[currentPos]) || (wcschr(L".\\/:_", commandLine[currentPos]) != NULL)) && currentPos < commandLine.length())
             {
                 currentPos++;
             }
