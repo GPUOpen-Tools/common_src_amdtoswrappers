@@ -115,7 +115,7 @@ static bool osCheckForOutErrRedirection(gtString& commandLine, bool stdErr, gtSt
     int nameEnd = -1;
     bool nameLooked = false;
     appendMode = false;
-    
+
     gtString  WRITE_TO_FILE_OP  = (stdErr ? L"2>"  : L">");
     gtString  APPEND_TO_FILE_OP = (stdErr ? L"2>>" : L">>");
 
@@ -231,7 +231,7 @@ bool osCheckForInputRedirection(gtString& commandLine, gtString& fileName)
 }
 
 // ---------------------------------------------------------------------------
-// Name:        afWin32RedirectionManager::getRedirectionFileName
+// Name:        osGetRedirectionFileName
 // Description: find the name of the file name and return the end position
 // Return Val:  int
 // Author:      AMD Developer Tools Team
@@ -278,7 +278,7 @@ int osGetRedirectionFileName(const gtString& commandLine, int startingPos, gtStr
         // create the name of the file if it was found correctly
         if (retVal != -1)
         {
-            commandLine.getSubString(startName, retVal, fileName);
+            commandLine.getSubString(startName, retVal - 1, fileName);
 
             // in quota trip the " from the start and end
             if (inQuota)
