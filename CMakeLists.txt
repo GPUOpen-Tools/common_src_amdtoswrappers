@@ -261,15 +261,15 @@ file(GLOB LINUX_SRC
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     add_library(AMDTOSWrappers STATIC ${WINDOWS_SRC})
     target_link_libraries(AMDTOSWrappers wsock32 ws2_32)
-elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     add_library(AMDTOSWrappers STATIC ${LINUX_SRC})
 endif()
 
 # Set binary suffix
-set_target_properties(AMDTOSWrappers PROPERTIES DEBUG_POSTFIX -d)
+set_target_properties(AMDTOSWrappers PROPERTIES DEBUG_POSTFIX -d CXX_STANDARD 11)
 
 # Link settings
-if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     target_link_libraries (AMDTOSWrappers rt)
 endif()
 
