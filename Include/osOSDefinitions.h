@@ -392,6 +392,9 @@
         // Mutex handle:
         typedef pthread_mutex_t osMutexHandle;
 
+        // Pointer to a machine code instruction:
+        typedef void* osInstructionPointer;
+
         // Pointer to a function:
         typedef void* osProcedureAddress;
 

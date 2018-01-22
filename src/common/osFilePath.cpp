@@ -32,8 +32,6 @@
     #define S_ISDIR(mode) __S_ISTYPE((mode), _S_IFDIR)
     #define S_ISREG(mode) __S_ISTYPE((mode), _S_IFREG)
     #define S_ISCHR(mode) __S_ISTYPE((mode), S_IFCHR)
-#elif ((AMDT_BUILD_TARGET == AMDT_LINUX_OS) && (AMDT_LINUX_VARIANT == AMDT_MAC_OS_X_LINUX_VARIANT))
-    #define OS_MAC_APPLICATION_BUNDLE_SUFFIX ".app"
 #endif
 
 // Static members initialization:
@@ -411,7 +409,7 @@ bool osFilePath::isExecutable() const
             {
                 const gtString& fullPath = asString();
                 int l = fullPath.length();
-                int suffixLastPosition = fullPath.reverseFind(OS_MAC_APPLICATION_BUNDLE_SUFFIX);
+                int suffixLastPosition = fullPath.reverseFind(OS_MAC_APPLICATION_BUNDLE_FILE_EXTENSION);
 
                 // Note that we expect the suffix to be 4 chars from the end:
                 // "/Applications/Foo.app"
