@@ -270,7 +270,7 @@ set_target_properties(AMDTOSWrappers PROPERTIES DEBUG_POSTFIX -d CXX_STANDARD 11
 
 # Link settings
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    target_link_libraries (AMDTOSWrappers rt)
+    target_link_libraries (AMDTOSWrappers rt ${CMAKE_DL_LIBS} -pthread)
 endif()
 
 target_link_libraries (AMDTOSWrappers AMDTBaseTools)
