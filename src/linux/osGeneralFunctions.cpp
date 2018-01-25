@@ -161,6 +161,10 @@ bool osGetOSAddressSpace(int& addressSpace)
 // ---------------------------------------------------------------------------
 bool osGetLinuxVariantName(gtString& linuxVariantName)
 {
+#ifdef __APPLE__
+    linuxVariantName = L"Darwin";
+    return (true);
+#else  __APPLE__
     bool retVal = false;
 
     linuxVariantName = L"Unknown";
@@ -224,5 +228,6 @@ bool osGetLinuxVariantName(gtString& linuxVariantName)
     }
 
     return retVal;
+#endif __APPLE__
 }
 

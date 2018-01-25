@@ -76,6 +76,7 @@ OS_API bool osWindowsVersionToShortString(const osWindowsVersion& windowsVersion
 OS_API bool osGetStringPropertyValueFromPListFile(const gtString& fileFullPath, const gtString& propertyName, gtString& propertyValue);
 OS_API gtString osGetExecutableFromMacApplicationBundle(const gtString& bundlePath);
 OS_API bool osDoesProcessExist(const gtString& processName);
+OS_API bool osGetLinuxVariantName(gtString& linuxVariantName);
 
 #elif ((AMDT_BUILD_TARGET == AMDT_LINUX_OS) && (AMDT_LINUX_VARIANT == AMDT_GENERIC_LINUX_VARIANT))
 // Generic Linux variants:
