@@ -27,7 +27,9 @@
 #include <AMDTOSWrappers/Include/osFilePath.h>
 
 // The below file status macros are defined on Linux, but not on Windows:
-#if AMDT_BUILD_TARGET == AMDT_WINDOWS_OS
+#if ((AMDT_BUILD_TARGET == AMDT_LINUX_OS) && (AMDT_LINUX_VARIANT == AMDT_MAC_OS_X_LINUX_VARIANT))
+    #define __S_ISTYPE(mode, mask)  (((mode) & S_IFMT) == (mask))
+#elif AMDT_BUILD_TARGET == AMDT_WINDOWS_OS
     #define __S_ISTYPE(mode, mask)  (((mode) & _S_IFMT) == (mask))
     #define S_ISDIR(mode) __S_ISTYPE((mode), _S_IFDIR)
     #define S_ISREG(mode) __S_ISTYPE((mode), _S_IFREG)

@@ -151,19 +151,19 @@ bool osLaunchFileInCurrentThread(const gtString& fileToBeLaunched, const gtStrin
                 }
 
 #elif AMDT_LINUX_VARIANT == AMDT_MAC_OS_X_LINUX_VARIANT
-
-            // We are running on OS X, use the "open" command to open the file
-            if (commandLineParameters.isEmpty())
-            {
-                const char* commandArgs[] = { "open", utf8FileToBeLaunched.c_str(), utf8CommandLineParameters.c_str(), NULL };
-                ::execvp("open", (char* const*)commandArgs);
-            }
-            else
-            {
-                const char* commandArgs[] = { "open", utf8FileToBeLaunched.c_str(), utf8CommandLineParameters.c_str(), NULL };
-                ::execvp("open", (char* const*)commandArgs);
-            }
-
+           {
+                // We are running on OS X, use the "open" command to open the file
+                if (commandLineParameters.isEmpty())
+                {
+                    const char* commandArgs[] = { "open", utf8FileToBeLaunched.c_str(), utf8CommandLineParameters.c_str(), NULL };
+                    ::execvp("open", (char* const*)commandArgs);
+                }
+                else
+                {
+                    const char* commandArgs[] = { "open", utf8FileToBeLaunched.c_str(), utf8CommandLineParameters.c_str(), NULL };
+                    ::execvp("open", (char* const*)commandArgs);
+                }
+            
 #else
 #error Unknown Linux variant!
 #endif
