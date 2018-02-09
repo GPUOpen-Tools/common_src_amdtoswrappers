@@ -1240,7 +1240,7 @@ bool popen2(const char* pCmd, popen2_data_t& childInfo)
                 // clear the codexl ld_library_path
                 osRemoveRuntimeLibsPathFromLibraryPath();
 
-                execl("/bin/sh", "sh", "-c", pCmd, 0);
+                execl("/bin/sh", "sh", "-c", pCmd, NULL);
                 perror("execl");
                 exit(99);
             }
