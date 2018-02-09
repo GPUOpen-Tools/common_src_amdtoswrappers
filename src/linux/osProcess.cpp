@@ -706,7 +706,7 @@ void osCloseProcessRedirectionFiles()
     g_errorRedirectFile.closeFile();
 }
 
-
+#ifndef __APPLE__
 bool osSetProcessAffinityMask(osProcessId processId, const osProcessHandle processHandle, gtUInt64 affinityMask)
 {
     (void)(processHandle); // unused
@@ -726,6 +726,7 @@ bool osSetProcessAffinityMask(osProcessId processId, const osProcessHandle proce
     int res = sched_setaffinity(processId, sizeof(cpu_set_t), &cpumask);
     return 0 == res;
 }
+#endif
 
 
 // ---------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 #include <AMDTBaseTools/Include/AMDTDefinitions.h>
 
 // On Mac OS X:
-#if AMDT_LINUX_VARIANT == AMDT_MAC_OS_X_LINUX_VARIANT
+#ifdef __APPLE__
     // Mach kernel:
     #include <mach/mach_init.h>
 #endif
@@ -155,7 +155,7 @@ bool osThread::execute()
         GT_IF_WITH_ASSERT(rc2 == 0)
         {
             // On Mac OS X:
-#if AMDT_LINUX_VARIANT == AMDT_MAC_OS_X_LINUX_VARIANT
+#ifdef __APPLE__
             {
                 // Get the thread's mach thread id and store it as the thread's id:
                 // (See above implementation note)
@@ -409,6 +409,7 @@ void osThread::debugLogThreadRunStarted(osThreadId threadId, const gtString& thr
     }
 }
 
+#ifndef __APPLE__
 // ---------------------------------------------------------------------------
 // Name:        osThread::waitForThreadEnd
 // Description: Wait for the thread to end or until the timeout expires.
@@ -448,6 +449,7 @@ bool osThread::waitForThreadEnd(const osTimeInterval& maxTimeToWait)
 
     return isThreadEndedInTime;
 }
+#endif
 
 // ---------------------------------------------------------------------------
 // Name:        osAreThreadHandlesEquivalent
@@ -484,23 +486,22 @@ osThreadId osGetCurrentThreadId()
 {
     osThreadId retVal = OS_NO_THREAD_ID;
 
-#if AMDT_LINUX_VARIANT == AMDT_GENERIC_LINUX_VARIANT
+#ifdef __APPLE__
+
+    // Get the current Mach kernel thread id:
+     retVal = mach_thread_self();
+
+#elif AMDT_LINUX_VARIANT == AMDT_GENERIC_LINUX_VARIANT
     {
         // Get the current pthread id:
         retVal = ::pthread_self();
     }
-#elif AMDT_LINUX_VARIANT == AMDT_MAC_OS_X_LINUX_VARIANT
-    {
-        // Get the current Mach kernel thread id:
-        retVal = mach_thread_self();
-    }
-#else
-#error Error Unknown linux variant!
 #endif
 
     return retVal;
 }
 
+#ifndef __APPLE__
 // ---------------------------------------------------------------------------
 // Name:        osGetUniqueCurrentThreadId
 // Description: Returns the unique OS id for the calling thread.
@@ -522,6 +523,7 @@ osThreadId osGetUniqueCurrentThreadId()
 
     return retVal;
 }
+#endif
 
 // ---------------------------------------------------------------------------
 // Name:        osGetCurrentThreadHandle

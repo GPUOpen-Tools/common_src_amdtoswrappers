@@ -11,7 +11,11 @@
 // POSIX:
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#ifndef __APPLE__
 #include <sys/sendfile.h>
+#endif
+
 #include <unistd.h>
 #include <dirent.h>
 #include <fnmatch.h>

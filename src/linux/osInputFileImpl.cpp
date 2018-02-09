@@ -252,7 +252,7 @@ bool osInputFileImpl::seekCurrentPosition(osStream::osStreamPosition seekStartPo
     return retVal;
 }
 
-
+#ifndef __APPLE__
 // ---------------------------------------------------------------------------
 // Name:        osInputFileImpl::currentPosition
 // Description: Returns the current read position.
@@ -279,3 +279,4 @@ bool osInputFileImpl::currentPosition(osStream::osStreamPosition positionReferen
 
     return retVal;
 }
+#endif
