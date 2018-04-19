@@ -50,7 +50,7 @@ osCpuid::osCpuid() : m_isCpuAmd(false), m_hasLocalApic(false), m_isIbsAvailable(
     m_apicId(0), m_core(0), m_node(0), m_hypervisorVendorId(HV_VENDOR_UNKNOWN), m_isMshvRootPartition(false)
 {
     //cpuid returns 4 register values: eax, ebx, ecx, and edx as dwords
-    osCpuidParam_t info[MAX_CPUID_REGS];
+    osCpuidParam_t info[MAX_CPUID_REGS] = {};
     osCpuidParam_t maxExtCpuidFn;
     osCpuidParam_t cpuidFn;
     char vendorId[13];

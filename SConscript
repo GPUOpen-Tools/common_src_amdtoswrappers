@@ -26,7 +26,8 @@ env.Append( CPPPATH = [
 env.Append(CPPFLAGS = '-fno-strict-aliasing')
 
 # osMessageBox, osDesktop
-env_no_c11.Append(CFLAGS = '-fno-strict-aliasing')
+# -Wno-misleading-indentation needed to compile miniz.c cleanly with gcc7
+env_no_c11.Append(CFLAGS = '-fno-strict-aliasing -Wno-misleading-indentation')
 
 UseGtk(env)
 UseTinyXml(env)

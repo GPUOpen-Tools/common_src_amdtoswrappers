@@ -140,6 +140,9 @@ bool osFillNetworkAdapterDetails(const gtASCIIString& adapterName, osNetworkAdap
 
     GT_IF_WITH_ASSERT(pMACAddressStr != NULL)
     {
+// ignore the maybe-uninitialized warning for this code when compiling with gcc7
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
         // If the adapter's MAC address is valid:
         if ((pMACAddressStr[0] != 0) || (pMACAddressStr[1] != 0) ||
             (pMACAddressStr[2] != 0) || (pMACAddressStr[3] != 0) ||
@@ -155,7 +158,7 @@ bool osFillNetworkAdapterDetails(const gtASCIIString& adapterName, osNetworkAdap
             // Mark that the MAC address is invalid:
             adapterDetails._MACAddress.makeEmpty();
         }
-
+#pragma DCC diagnostic pop
         rcMAC = true;
     }
 
