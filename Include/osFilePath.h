@@ -193,7 +193,7 @@ private:
     static bool ms_supportUnicodeInUserAppData;
 
     /// What will be the alternative file path for user with unicode characters?
-    static osFilePath ms_userAppDataFilePath;
+    static gtString ms_userAppDataFilePathCache;
 
 };
 

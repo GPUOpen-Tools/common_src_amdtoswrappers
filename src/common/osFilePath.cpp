@@ -38,7 +38,7 @@
 
 // Static members initialization:
 bool osFilePath::ms_supportUnicodeInUserAppData = true;
-osFilePath osFilePath::ms_userAppDataFilePath = osFilePath();
+gtString osFilePath::ms_userAppDataFilePathCache = gtString(L"");
 
 const wchar_t* SPACE = L" ";
 
@@ -892,18 +892,18 @@ void osFilePath::InitializeUnicodeCharactersUserFilePath(bool applyRedirection)
 
             if (sIsUnicodeUser)
             {
-                ms_userAppDataFilePath = osFilePath(OS_TEMP_DIRECTORY);
+                ms_userAppDataFilePathCache = osFilePath(OS_TEMP_DIRECTORY).asString();
             }
             else
             {
-                ms_userAppDataFilePath = appDataFilePath;
+                ms_userAppDataFilePathCache = appDataFilePath.asString();
             }
 
             sIsUnicodeUserInitialized = true;
 
             // Print the user app data folder location to the log file:
             gtString message;
-            message.appendFormattedString(L"User app data folder. Original location: %ls. Current location: %ls", appDataFilePath.asString().asCharArray(), ms_userAppDataFilePath.asString().asCharArray());
+            message.appendFormattedString(L"User app data folder. Original location: %ls. Current location: %ls", appDataFilePath.asString().asCharArray(), ms_userAppDataFilePathCache.asCharArray());
             OS_OUTPUT_DEBUG_LOG(message.asCharArray(), OS_DEBUG_LOG_INFO);
 
         }

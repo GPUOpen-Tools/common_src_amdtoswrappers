@@ -191,7 +191,7 @@ bool osFilePath::setPath(osPreDefinedFilePaths predefinedfilePath, bool applyRed
         case OS_USER_APPLICATION_DATA:
         {
             InitializeUnicodeCharactersUserFilePath(applyRedirection);
-            wcscpy(stringBuffer, ms_userAppDataFilePath.asString().asCharArray());
+            wcscpy(stringBuffer, ms_userAppDataFilePathCache.asCharArray());
 
             retVal = true;
         }
