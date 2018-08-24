@@ -285,7 +285,7 @@ void osGetSystemOpenGLModulePath(gtVector<osFilePath>& systemOGLModulePaths)
                 L"/opt/amdgpu-pro/lib/x86_64-linux-gnu/" OS_OPENGL_MODULE_NAME,
 
                 // Red-Hat locations for AMD open-source driver
-				L"/opt/amdgpu-pro/lib64/" OS_OPENGL_MODULE_NAME,
+                L"/opt/amdgpu-pro/lib64/" OS_OPENGL_MODULE_NAME,
                 L"/usr/lib64/amdgpu-pro/" OS_OPENGL_MODULE_NAME,
 
                 // Locations of the AMD closed-source driver
@@ -424,16 +424,20 @@ bool osGetSystemOpenCLModulePath(gtVector<osFilePath>& systemOCLModulePaths)
         {
             // Make sure that the amdgpu-pro location comes first.
             gtVector<osFilePath> tmpPaths = std::move(systemOCLModulePaths);
-			
-			// Ubuntu amdgpu-pro binaries path.
+
+            // Ubuntu amdgpu-pro binaries path.
             gtString systemOCLModulePathStr = L"/opt/amdgpu-pro/lib/x86_64-linux-gnu/" OS_OPENCL_ICD_MODULE_NAME;
             systemOCLModulePaths.push_back(systemOCLModulePathStr);
-			
-			// RHEL amdgpu-pro binaries path.
-			systemOCLModulePathStr = L"/opt/amdgpu-pro/lib64/" OS_OPENCL_ICD_MODULE_NAME;
+            
+            // RHEL amdgpu-pro binaries path.
+            systemOCLModulePathStr = L"/opt/amdgpu-pro/lib64/" OS_OPENCL_ICD_MODULE_NAME;
             systemOCLModulePaths.push_back(systemOCLModulePathStr);
-			
-			// Get the other paths in.
+
+            // ROCm binaries path.
+            systemOCLModulePathStr = L"/opt/rocm/opencl/lib/x86_64/" OS_OPENCL_ICD_MODULE_NAME;
+            systemOCLModulePaths.push_back(systemOCLModulePathStr);
+
+            // Get the other paths in.
             systemOCLModulePaths.insert(systemOCLModulePaths.end(), tmpPaths.begin(), tmpPaths.end());
 
             systemOCLModulePathStr = L"/usr/lib32/fglrx/" OS_OPENCL_ICD_MODULE_NAME;
