@@ -37,9 +37,9 @@
 #endif
 
 #ifdef _DEBUG
-    #define AMDTWINCOMPONENTEXTUTILS_FILE_NAME  L"AMDTWinComponentExtUtils-d"
+    #define AMDTWINCOMPONENTEXTUTILS_FILE_NAME  L"CXLWinComponentExtUtils-d"
 #else
-    #define AMDTWINCOMPONENTEXTUTILS_FILE_NAME  L"AMDTWinComponentExtUtils"
+    #define AMDTWINCOMPONENTEXTUTILS_FILE_NAME  L"CXLWinComponentExtUtils"
 #endif // DEBUG
 
 DEFINE_PROPERTYKEY(PKEY_AppUserModel_HostEnvironment, 0x9F4C2855, 0x9F79, 0x4B39, 0xA8, 0xD0, 0xE1, 0xD4, 0x2D, 0xE1, 0xD5, 0xF3, 14);
