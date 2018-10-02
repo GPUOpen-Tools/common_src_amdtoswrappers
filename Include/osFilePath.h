@@ -175,7 +175,7 @@ private:
     void SetSamplePath(osApplicationSpecialDirectories predefinedFilePath);
 
     /// Initializes the user app data file path for a user with unicode characters:
-    void InitializeUnicodeCharactersUserFilePath(bool applyRedirection);
+    gtString& InitializeUnicodeCharactersUserFilePath(bool applyRedirection);
 
     /// Return the native user application app data folder, without the unicode workaround:
     virtual bool GetUserAppDataFilePath(osFilePath& userAppDataFilePath, bool applyRedirection);
@@ -191,10 +191,6 @@ private:
     /// In case that this flag is false, return temp folder as user application data, in case that the
     /// user name contain unicode characters:
     static bool ms_supportUnicodeInUserAppData;
-
-    /// What will be the alternative file path for user with unicode characters?
-    static gtString ms_userAppDataFilePathCache;
-
 };
 
 

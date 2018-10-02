@@ -38,7 +38,6 @@
 
 // Static members initialization:
 bool osFilePath::ms_supportUnicodeInUserAppData = true;
-gtString osFilePath::ms_userAppDataFilePathCache = gtString(L"");
 
 const wchar_t* SPACE = L" ";
 
@@ -866,14 +865,14 @@ osFilePath& osFilePath::adjustToCurrentOS()
     return *this;
 }
 
-void osFilePath::InitializeUnicodeCharactersUserFilePath(bool applyRedirection)
+gtString& osFilePath::InitializeUnicodeCharactersUserFilePath(bool applyRedirection)
 {
     /// Was the app data path unicode characters checked?
     static bool sIsUnicodeUserInitialized = false;
+    static gtString sUserAppDataFilePathCache = gtString(L"");
 
     if (!sIsUnicodeUserInitialized)
     {
-
         osFilePath appDataFilePath;
         bool rc = GetUserAppDataFilePath(appDataFilePath, applyRedirection);
         GT_IF_WITH_ASSERT(rc)
@@ -892,22 +891,24 @@ void osFilePath::InitializeUnicodeCharactersUserFilePath(bool applyRedirection)
 
             if (sIsUnicodeUser)
             {
-                ms_userAppDataFilePathCache = osFilePath(OS_TEMP_DIRECTORY).asString();
+                sUserAppDataFilePathCache = osFilePath(OS_TEMP_DIRECTORY).asString();
             }
             else
             {
-                ms_userAppDataFilePathCache = appDataFilePath.asString();
+                sUserAppDataFilePathCache = appDataFilePath.asString();
             }
 
             sIsUnicodeUserInitialized = true;
 
             // Print the user app data folder location to the log file:
             gtString message;
-            message.appendFormattedString(L"User app data folder. Original location: %ls. Current location: %ls", appDataFilePath.asString().asCharArray(), ms_userAppDataFilePathCache.asCharArray());
+            message.appendFormattedString(L"User app data folder. Original location: %ls. Current location: %ls", appDataFilePath.asString().asCharArray(), sUserAppDataFilePathCache.asCharArray());
             OS_OUTPUT_DEBUG_LOG(message.asCharArray(), OS_DEBUG_LOG_INFO);
 
         }
     }
+
+    return sUserAppDataFilePathCache;
 }
 
 // ---------------------------------------------------------------------------
