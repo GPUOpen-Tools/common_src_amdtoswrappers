@@ -18,7 +18,6 @@
     <ClCompile Include="src\common\osDebugLog.cpp" />
     <ClCompile Include="src\common\osDirectory.cpp" />
     <ClCompile Include="src\common\osDNSQueryThread.cpp" />
-    <ClCompile Include="src\common\osEmailClient.cpp" />
     <ClCompile Include="src\common\osExceptionReason.cpp" />
     <ClCompile Include="src\common\osFile.cpp" />
     <ClCompile Include="src\common\osFileImpl.cpp" />
@@ -138,7 +137,6 @@
     <ClInclude Include="Include\osDesktop.h" />
     <ClInclude Include="Include\osDirectory.h" />
     <ClInclude Include="Include\osDNSQueryThread.h" />
-    <ClInclude Include="Include\osEmailClient.h" />
     <ClInclude Include="Include\osExceptionReason.h" />
     <ClInclude Include="Include\osFile.h" />
     <ClInclude Include="Include\osFileLauncher.h" />

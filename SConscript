@@ -55,7 +55,6 @@ sources = \
     "src/common/osDirectory.cpp",
     "src/common/osDirectorySerializer.cpp",
     "src/common/osDNSQueryThread.cpp",
-    "src/common/osEmailClient.cpp",
     "src/common/osExceptionReason.cpp",
     "src/common/osFileImpl.cpp",
     "src/common/osFileLauncher.cpp",

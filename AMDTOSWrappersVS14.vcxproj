@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug_Static|Win32">
@@ -141,9 +141,6 @@
     </ClCompile>
     <ClCompile Include="src\common\osDirectorySerializer.cpp" />
     <ClCompile Include="src\common\osDNSQueryThread.cpp">
-      <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\common\osEmailClient.cpp">
       <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\common\osEnvironmentVariable.cpp" />
@@ -425,7 +422,6 @@
     <ClInclude Include="Include\osDesktop.h" />
     <ClInclude Include="Include\osDirectory.h" />
     <ClInclude Include="Include\osDNSQueryThread.h" />
-    <ClInclude Include="Include\osEmailClient.h" />
     <ClInclude Include="Include\osExceptionReason.h" />
     <ClInclude Include="Include\osFile.h" />
     <ClInclude Include="Include\osFileLauncher.h" />
