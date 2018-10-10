@@ -892,12 +892,13 @@ bool osGetProcessExecutablePath(osProcessId processId, gtString& executablePath)
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "/proc/%d/exe", processId);
 
-    int len = static_cast<int>(readlink(buffer, buffer, sizeof(buffer)));
+    char buf[512] = {};
+    int len = static_cast<int>(readlink(buffer, buf, sizeof(buf)));
 
     if (0 < len)
     {
-        buffer[len] = '\0';
-        executablePath.fromASCIIString(buffer, len);
+        buf[len] = '\0';
+        executablePath.fromASCIIString(buf, len);
     }
 
     // If the error is ENOENT, then the process does not have an executable, and we should not fail.
@@ -990,12 +991,13 @@ bool osGetProcessWorkingDirectory(osProcessId processId, gtString& workDirectory
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "/proc/%d/cwd", processId);
 
-    int len = static_cast<int>(readlink(buffer, buffer, sizeof(buffer)));
+    char buf[512] = {};
+    int len = static_cast<int>(readlink(buffer, buf, sizeof(buf)));
 
     if (0 < len)
     {
-        buffer[len] = '\0';
-        workDirectory.fromASCIIString(buffer);
+        buf[len] = '\0';
+        workDirectory.fromASCIIString(buf);
     }
 
     return 0 <= len;
@@ -1097,7 +1099,8 @@ bool osIsProcessAttachable(osProcessId processId)
     char buffer[1024];
     snprintf(buffer, sizeof(buffer), "/proc/%d/cwd", processId);
 
-    return (0 <= readlink(buffer, buffer, sizeof(buffer)));
+    char buf[512] = {};
+    return (0 <= readlink(buffer, buf, sizeof(buf)));
 }
 
 osProcessesEnumerator::osProcessesEnumerator() : m_pEnumHandler(NULL)
