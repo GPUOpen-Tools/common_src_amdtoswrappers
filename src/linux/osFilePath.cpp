@@ -37,7 +37,7 @@ const wchar_t osFilePath::osEnvironmentVariablePathsSeparator = ':';
 
 // Constants:
 #define OS_PATH_STRING_BUFFER_SIZE FILENAME_MAX
-#define OS_LINUX_TEMP_DIR_PATH L"/.CodeXL/CodeXL"
+#define OS_LINUX_TEMP_DIR_PATH L"/.rga"
 #define OS_LINUX_COMMON_APPLICATION_DATA_DIR L"/etc"
 #define OS_LINUX32_SYSTEM_DIR_PATH L"/usr/lib"
 #define OS_LINUX64_SYSTEM_DIR_PATH L"/usr/lib64"

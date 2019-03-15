@@ -1590,7 +1590,7 @@ static bool ReadProcessPlatformWow64(HANDLE hProcess, osRuntimePlatform& platfor
 
 // ---------------------------------------------------------------------------
 // Name:        osExecAndGrabOutput
-// Description: Executes the in a different process and captures its output.
+// Description: Executes the given command in a different process and captures its output.
 //              This routine blocks, but, using the cancelSignal flag, it allows
 //              the caller to terminate the command's execution.
 // Arguments:   cmd - The command to be executed.
@@ -1601,7 +1601,7 @@ static bool ReadProcessPlatformWow64(HANDLE hProcess, osRuntimePlatform& platfor
 //              cmdOutput - an output parameter to hold the command's output.
 // Return Val:  bool - Success / failure.
 // Author:      AMD Developer Tools Team
-// Date:        30/08/2015
+// Date:        08/30/2015
 // ---------------------------------------------------------------------------
 OS_API bool osExecAndGrabOutput(const char* cmd, const bool& cancelSignal, gtString& cmdOutput)
 {
@@ -1627,12 +1627,12 @@ OS_API bool osExecAndGrabOutput(const char* cmd, const bool& cancelSignal, gtStr
         tmpFilePath.setFileExtension(TMP_OUTPUT_FILE_EXT);
 
         HANDLE h = CreateFile(tmpFilePath.asString().asCharArray(),
-                              FILE_APPEND_DATA,
-                              FILE_SHARE_WRITE | FILE_SHARE_READ,
-                              &sa,
-                              CREATE_ALWAYS,
-                              FILE_ATTRIBUTE_NORMAL,
-                              NULL);
+            FILE_APPEND_DATA,
+            FILE_SHARE_WRITE | FILE_SHARE_READ,
+            &sa,
+            CREATE_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL);
 
         PROCESS_INFORMATION pi;
         STARTUPINFO si;
@@ -1694,6 +1694,188 @@ OS_API bool osExecAndGrabOutput(const char* cmd, const bool& cancelSignal, gtStr
                     if (rc1)
                     {
                         cmdOutput.fromASCIIString(cmdOutputASCII.asCharArray());
+                    }
+                }
+
+                // Delete the temporary file.
+                tmpFile.deleteFile();
+            }
+
+            ret = true;
+        }
+        else
+        {
+            unsigned int errorNum = GetLastError();
+            gtString errMsg = L"Failed to launch the command. Error = ";
+            errMsg << errorNum;
+            OS_OUTPUT_DEBUG_LOG(errMsg.asCharArray(), OS_DEBUG_LOG_ERROR);
+        }
+    }
+
+    return ret;
+}
+
+// ---------------------------------------------------------------------------
+// Name:        osExecAndGrabOutputAndError
+// Description: Executes the given command in a different process and captures its output
+//              from both stderr and stdour.
+//              This routine blocks, but, using the cancelSignal flag, it allows
+//              the caller to terminate the command's execution.
+// Arguments:   cmd - The command to be executed.
+//              cancelSignal - A reference to the cancel flag. Upon calling this
+//              routine, the cancelSignal flag should be set to false. In case that
+//              the caller wants to terminate the commands' execution, this flag
+//              should be set to true.
+//              workingDir - the working directory to set for the launched process.
+//              cmdErrOutput - an output parameter to hold the command's stderr output.
+//              cmdOutput - an output parameter to hold the command's stdout output.
+// Return Val:  bool - Success / failure.
+// Author:      AMD Developer Tools Team
+// Date:        03/07/2019
+// ---------------------------------------------------------------------------
+OS_API bool osExecAndGrabOutputAndError(const char* cmd, const bool& cancelSignal,
+    const gtString& workingDir, gtString& cmdOutput, gtString& cmdErrOutput)
+{
+    bool ret = false;
+    SECURITY_ATTRIBUTES sa;
+    sa.nLength = sizeof(sa);
+    sa.lpSecurityDescriptor = NULL;
+    sa.bInheritHandle = TRUE;
+
+    // Clear the output string.
+    cmdOutput.makeEmpty();
+
+    // Generate a unique file name for the temp file - stdout.
+    gtString tempFileNameOut = L"osTempFile_stdout";
+    tempFileNameOut.appendFormattedString(L"%llu", __rdtsc());
+    const gtString TMP_OUTPUT_FILE_EXT = L"txt";
+    osFilePath tmpFilePathOut(osFilePath::OS_TEMP_DIRECTORY);
+
+    // Generate a unique file name for the temp file - stderr.
+    gtString tempFileNameErr = L"osTempFile_stderr";
+    tempFileNameErr.appendFormattedString(L"%llu", __rdtsc());
+    osFilePath tmpFilePathErr(osFilePath::OS_TEMP_DIRECTORY);
+
+    if (cmd != NULL)
+    {
+        // Prepare the file name.
+        tmpFilePathOut.setFileName(tempFileNameOut);
+        tmpFilePathOut.setFileExtension(TMP_OUTPUT_FILE_EXT);
+
+        tmpFilePathErr.setFileName(tempFileNameErr);
+        tmpFilePathErr.setFileExtension(TMP_OUTPUT_FILE_EXT);
+
+        // Create the file to which stdout is going to be redirected.
+        HANDLE hOut = CreateFile(tmpFilePathOut.asString().asCharArray(),
+                              FILE_APPEND_DATA,
+                              FILE_SHARE_WRITE | FILE_SHARE_READ,
+                              &sa,
+                              CREATE_ALWAYS,
+                              FILE_ATTRIBUTE_NORMAL,
+                              NULL);
+
+        // Create the file to which stderr is going to be redirected.
+        HANDLE hErr = CreateFile(tmpFilePathErr.asString().asCharArray(),
+            FILE_APPEND_DATA,
+            FILE_SHARE_WRITE | FILE_SHARE_READ,
+            &sa,
+            CREATE_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL);
+
+        PROCESS_INFORMATION pi;
+        STARTUPINFO si;
+        BOOL rc = FALSE;
+        DWORD flags = CREATE_NO_WINDOW;
+
+        ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
+        ZeroMemory(&si, sizeof(STARTUPINFO));
+        si.cb = sizeof(STARTUPINFO);
+        si.dwFlags |= STARTF_USESTDHANDLES;
+        si.hStdInput = NULL;
+        si.hStdError = hErr;
+        si.hStdOutput = hOut;
+
+        // Fix the command line to handle white spaces in the CLI's path
+        // by wrapping it with quote characters at the beginning and the end.
+        gtString tmpCmdLine;
+        tmpCmdLine << cmd;
+
+        // Log the launch command to the CodeXL log file
+        OS_OUTPUT_FORMAT_DEBUG_LOG(OS_DEBUG_LOG_DEBUG, L"Launching command: %ls", tmpCmdLine.asCharArray());
+
+        // Command line.
+        const wchar_t* pCmd = tmpCmdLine.asCharArray();
+        wchar_t* _pCmd = const_cast<wchar_t*>(pCmd);
+
+        // Working directory.
+        const wchar_t* pWorkingDir = workingDir.asCharArray();
+        wchar_t* _pWorkingDir = const_cast<wchar_t*>(pWorkingDir);
+
+        // Create the process.
+        rc = CreateProcess(NULL, _pCmd, NULL, NULL, TRUE, flags, NULL, _pWorkingDir, &si, &pi);
+
+        if (rc)
+        {
+            while (WAIT_TIMEOUT == WaitForSingleObject(pi.hProcess, 100))
+            {
+                if (cancelSignal)
+                {
+                    CloseHandle(pi.hProcess);
+                    CloseHandle(pi.hThread);
+                    CloseHandle(hOut);
+                    CloseHandle(hErr);
+                }
+
+            }
+
+            if (!cancelSignal)
+            {
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+                CloseHandle(hOut);
+                CloseHandle(hErr);
+            }
+
+            // Read the temp file - stdout.
+            if (tmpFilePathOut.exists())
+            {
+                // Read the command's output.
+                osFile tmpFile(tmpFilePathOut);
+                bool rc1 = tmpFile.open(osChannel::OS_ASCII_TEXT_CHANNEL, osFile::OS_OPEN_TO_READ);
+
+                if (rc1)
+                {
+                    gtASCIIString cmdOutputASCII;
+                    rc1 = tmpFile.readIntoString(cmdOutputASCII);
+                    tmpFile.close();
+
+                    if (rc1)
+                    {
+                        cmdOutput.fromASCIIString(cmdOutputASCII.asCharArray());
+                    }
+                }
+
+                // Delete the temporary file.
+                tmpFile.deleteFile();
+            }
+
+            // Read the temp file - stderr.
+            if (tmpFilePathErr.exists())
+            {
+                // Read the command's output.
+                osFile tmpFile(tmpFilePathErr);
+                bool rc1 = tmpFile.open(osChannel::OS_ASCII_TEXT_CHANNEL, osFile::OS_OPEN_TO_READ);
+
+                if (rc1)
+                {
+                    gtASCIIString cmdOutputASCII;
+                    rc1 = tmpFile.readIntoString(cmdOutputASCII);
+                    tmpFile.close();
+
+                    if (rc1)
+                    {
+                        cmdErrOutput.fromASCIIString(cmdOutputASCII.asCharArray());
                     }
                 }
 
