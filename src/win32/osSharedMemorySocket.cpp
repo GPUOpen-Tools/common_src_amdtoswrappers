@@ -21,53 +21,6 @@ replaced by osPipeSocket.
 #include <AMDTOSWrappers/Include/osStopWatch.h>
 #include <AMDTOSWrappers/Include/osSharedMemorySocket.h>
 
-
-/*
-
-  Shared memory sockets implementation notes:
-   ==========================================
-   The shared memory is build out of a header section that contains managment data
-   and two data buffers:
-   - Server to client - A buffer that holds data sent from the socket server to the
-                        socket client.
-   - Client to server - A buffer that holds data sent from the socket client to the
-                        socket server.
-
-   The buffers are ordered in a cyclic manner (when the write pointer reaches the
-   buffer end, it continues writing on the buffer beginning.
-
-   The header section contains aid data like: the size of a single data buffer,
-   current read and write pointers, etc.
-
-   We use Win32 InterlockedExchange functions for client server synchronization. These
-   functions should be much faster than semaphores in Win32 implementation.
-
-   The shared memory layout is as follows:
-    -------------------------------------------------------------------------
-   | Header section  |   server to client buffer  |  client to server buffer |
-    -------------------------------------------------------------------------
-
-
-   Bibliography:
-   ============
-   - "Loop buffer" Code Project article: implements most of the above ideas under Linux.
-      (http://www.codeproject.com/threads/loop_buffer_-_Linux_versi.asp)
-
-   - Win32 shared memory examples can be found in the MSDN articles:
-     * "Creating Named Shared Memory" (one of the examples in CreateFileMapping documentation).
-     * "File Mapping" (Windows Development -> Windows base services -> Files and I/O ->
-                       SDK Documentation -> Storage -> Storage Overview -> File Managment ->
-                       File Mapping)
-
-  -  "A Fast Mostly User Mode Inter-Process Mutex" Code Project article: Uses Win32
-     InterlockedExchange functions for process syncronizations.
-     (http://www.codeproject.com/threads/opbmutex.asp)
-
-
-*/
-
-
-
 // ---------------------------------------------------------------------------
 // Name:        osSharedMemorySocket::osSharedMemorySocket
 // Description: Constructor
