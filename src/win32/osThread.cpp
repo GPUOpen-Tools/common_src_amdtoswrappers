@@ -736,11 +736,6 @@ void osSleep(unsigned long miliseconds)
 //  threadName - The thread's name.
 // Author:      AMD Developer Tools Team
 // Date:        25/11/2010
-// Implementation notes:
-//  This code was copied from few articles discussing this issue (google for "SetThreadName").
-//  Among these articles are:
-//  - Setting a Thread Name (Unmanaged) - http://msdn.microsoft.com/en-us/library/xcb2z8hs(VS.71).aspx
-//  - Name your threads in the VC debugger thread list - http://www.codeproject.com/KB/threads/Name_threads_in_debugger.aspx
 // ---------------------------------------------------------------------------
 void osNameThreadInDebugger(osThreadId threadId, const gtASCIIString& threadName)
 {
