@@ -1,3 +1,4 @@
+#ifdef NEEDED_
 //=====================================================================
 // Copyright 2016 (c), Advanced Micro Devices, Inc. All rights reserved.
 //
@@ -82,4 +83,5 @@ protected:
 
 
 #endif //__OSSETTINGSFILEHANDLER_H
+#endif // NEEDED_
 

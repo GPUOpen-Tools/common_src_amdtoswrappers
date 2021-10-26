@@ -1,3 +1,4 @@
+#ifdef NEEDED_
 //=====================================================================
 // Copyright 2016 (c), Advanced Micro Devices, Inc. All rights reserved.
 //
@@ -371,5 +372,5 @@ bool osSettingsFileHandler::ReadAttributeFromXMLNode(const TiXmlNode* pXmlNode, 
 
     return retVal;
 }
-
+#endif // NEEDED_
 
