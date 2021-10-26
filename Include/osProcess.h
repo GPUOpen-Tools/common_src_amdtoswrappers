@@ -98,6 +98,12 @@ OS_API bool osGetProcessLaunchInfo(osProcessId processId,
 OS_API bool osIsProcessAttachable(osProcessId processId);
 
 OS_API bool osExecAndGrabOutput(const char* cmd, const bool& cancelSignal, gtString& cmdOutput);
+
+#ifdef _WIN32
+OS_API bool osExecAndGrabOutputAndError(const char* cmd, const bool& cancelSignal,
+    const gtString& workingDir, gtString& cmdOutput, gtString& cmdErrOutput);
+#endif
+
 OS_API bool osGetMemoryUsage(const unsigned int processID,
                              unsigned int& PageFaultCount,
                              size_t& WorkingSetSize,
